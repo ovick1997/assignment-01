@@ -143,15 +143,15 @@
     margin-top: 20px;
   }
   
-  .prev-btn,
-  .next-btn {
+  .prev-btn, .next-btn {
     padding: 10px 20px;
     background-color: #333;
     color: white;
     border: none;
     cursor: pointer;
     margin: 0 10px;
-  }
+    border-radius: 8px;
+}
   
   .page-numbers {
     font-size: 1.2rem;
