@@ -122,13 +122,17 @@
 
     <!-- Pagination Section -->
     <section class="pagination-section">
-      <div class="pagination">
-        <button class="prev-btn">Previous</button>
-        <span class="page-numbers">1 </span>  
-        <span class="page-numbers">- 2 </span>  
-        <span class="page-numbers">- 3</span>  
-        <button class="next-btn">Next</button>
-      </div>
+      <ul id="border-pagination">
+        <li><a class="" href="#">«</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#" class="active">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">...</a></li>
+        <li><a href="#">6</a></li>
+        <li><a href="#">7</a></li>
+        <li><a href="#">»</a></li>
+      </ul> 
     </section>
   </main>
 
@@ -141,5 +145,77 @@
     <!-- Script JS -->
     <script src="assets/js/script.js"></script>
 
+    <script>
+      async function apiCall(url, method = 'GET', data = null) {
+          const options = {
+              method: method, // GET, POST, PUT, DELETE, etc.
+              headers: {
+              'Content-Type': 'application/json', // Specify content type if needed
+              // Add any other headers as necessary
+              },
+          };
+
+          // Add the request body if it's not a GET request
+          if (data && method !== 'GET') {
+              options.body = JSON.stringify(data);
+          }
+
+          try {
+              const response = await fetch(url, options);
+              
+              // Check if the request was successful
+              if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+              }
+
+              // Parse and return the JSON response
+              const result = await response.json();
+              return result;
+          } catch (error) {
+              console.error('There was an error making the API call:', error);
+              return null;
+          }
+      }
+
+      // Usage example for a GET request
+      apiCall('https://gutendex.com/books/?page=1')
+      .then(handleResponse)
+      .catch(error => console.error(error));
+
+      function handleResponse(response) {
+          generateHtml(response.results);
+      }
+
+      function generateHtml(dataList) {
+          const dataListWrapper = document.getElementById('bookList');
+          dataListWrapper.innerHTML = '';
+
+          let innerHtml = '';
+          dataList.forEach(data => {
+            innerHtml += `
+        <article class="book-card">
+          <img src="${data.formats['image/jpeg']}" alt="${data.title}" class="book-cover">
+          <div class="book-info">
+            <h2 class="book-title">${data.title}</h2>
+            `;
+            if(data.authors.length > 0) {
+                  innerHtml += `<p class="book-author">Author: <span>${data.authors[0].name}</span></p>`;
+              }
+              else {
+                  innerHtml += `<p class="book-author">Author: <span>N/A</span></p>`;
+              }
+            innerHtml += `
+            <p class="book-genre">Genre: <span>${data.subjects[0]}</span></p>
+            <p class="book-id">ID: <span>${data.id}</span> </p>
+
+            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
+          </div>
+        </article>
+            `;
+          });
+
+          dataListWrapper.innerHTML = innerHtml;
+      }
+  </script>
 </body>
 </html>
