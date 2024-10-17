@@ -431,5 +431,8 @@ footer p {
     .book-list {
       justify-content: center;
     }
+    .book-card{
+      flex-basis: 100%;
+    }
   }
   
