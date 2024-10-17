@@ -10,6 +10,8 @@
 
 </head>
 
+
+
  <!-- Header with Navbar -->
  <header>
     <nav class="navbar">
@@ -49,73 +51,22 @@
     <!-- Section for Book List -->
     <section class="book-list-section">
       <div class="book-list" id="bookList">
+
+              <!-- Preloader -->
+      <div class="preloader-wrapper" id="preloader">
+        <div class="dot-spinner">
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+          <div class="dot-spinner__dot"></div>
+      </div>
+      </div>
         
-        <article class="book-card">
-          <img src="assets/img/book-cover.jpg" alt="Book Cover" class="book-cover">
-          <div class="book-info">
-            <h2 class="book-title">Book Title</h2>
-            <p class="book-author">Author: <span>John Doe</span></p>
-            <p class="book-genre">Genre: <span>Fiction</span></p>
-            <p class="book-id">ID: <span>67890</span> </p>
-
-            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
-          </div>
-        </article>
-        <article class="book-card">
-          <img src="assets/img/book-cover.jpg" alt="Book Cover" class="book-cover">
-          <div class="book-info">
-            <h2 class="book-title">Book Title</h2>
-            <p class="book-author">Author: <span>John Doe</span></p>
-            <p class="book-genre">Genre: <span>Fiction</span></p>
-            <p class="book-id">ID: <span>67890</span> </p>
-
-            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
-          </div>
-        </article>
-        <article class="book-card">
-          <img src="assets/img/book-cover.jpg" alt="Book Cover" class="book-cover">
-          <div class="book-info">
-            <h2 class="book-title">Book Title</h2>
-            <p class="book-author">Author: <span>John Doe</span></p>
-            <p class="book-genre">Genre: <span>Fiction</span></p>
-            <p class="book-id">ID: <span>67890</span> </p>
-
-            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
-          </div>
-        </article>
-        <article class="book-card">
-          <img src="assets/img/book-cover.jpg" alt="Book Cover" class="book-cover">
-          <div class="book-info">
-            <h2 class="book-title">Book Title</h2>
-            <p class="book-author">Author: <span>John Doe</span></p>
-            <p class="book-genre">Genre: <span>Fiction</span></p>
-            <p class="book-id">ID: <span>67890</span> </p>
-
-            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
-          </div>
-        </article>
-        <article class="book-card">
-          <img src="assets/img/book-cover.jpg" alt="Book Cover" class="book-cover">
-          <div class="book-info">
-            <h2 class="book-title">Book Title</h2>
-            <p class="book-author">Author: <span>John Doe</span></p>
-            <p class="book-genre">Genre: <span>Fiction</span></p>
-            <p class="book-id">ID: <span>67890</span> </p>
-
-            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
-          </div>
-        </article>
-        <article class="book-card">
-          <img src="assets/img/book-cover.jpg" alt="Book Cover" class="book-cover">
-          <div class="book-info">
-            <h2 class="book-title">Book Title</h2>
-            <p class="book-author">Author: <span>John Doe</span></p>
-            <p class="book-genre">Genre: <span>Fiction</span></p>
-            <p class="book-id">ID: <span>67890</span> </p>
-
-            <button class="wishlist-btn" onclick="toggleWishlist('12345')">&#10084;</button> <!-- Wishlist Icon -->
-          </div>
-        </article>
+        <!-- List will appear here -->
        
       </div>
     </section>
@@ -216,6 +167,22 @@
 
           dataListWrapper.innerHTML = innerHtml;
       }
+  </script>
+
+  <script>
+    function showPreloader() {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.style.display = 'flex';  // Show the preloader
+      }
+    }
+
+    function hidePreloader() {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.style.display = 'none';  // Hide the preloader
+      }
+    }
   </script>
 </body>
 </html>
