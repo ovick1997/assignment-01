@@ -35,7 +35,7 @@
                     <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
                 </svg>
             </div>
-            <input class="search_input" placeholder="search" type="text">
+            <input class="search_input" id="search_input" oninput="searchData()" placeholder="search" type="text">
         </div>
     </div>
         
@@ -52,18 +52,7 @@
     <section class="book-list-section">
       <div class="book-list" id="bookList">
 
-              <!-- Preloader -->
-      <div class="preloader-wrapper" id="preloader">
-        <div class="dot-spinner">
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-          <div class="dot-spinner__dot"></div>
-      </div>
+          <!-- Preloader -->
       </div>
         
         <!-- List will appear here -->
@@ -74,15 +63,7 @@
     <!-- Pagination Section -->
     <section class="pagination-section">
       <ul id="border-pagination">
-        <li><a class="" href="#">«</a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#" class="active">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">...</a></li>
-        <li><a href="#">6</a></li>
-        <li><a href="#">7</a></li>
-        <li><a href="#">»</a></li>
+        
       </ul> 
     </section>
   </main>
@@ -97,6 +78,10 @@
     <script src="assets/js/script.js"></script>
 
     <script>
+   
+      document.addEventListener('DOMContentLoaded', () => {
+          getApiData(selectedPage);
+      });
       async function apiCall(url, method = 'GET', data = null) {
           const options = {
               method: method, // GET, POST, PUT, DELETE, etc.
@@ -127,14 +112,91 @@
               return null;
           }
       }
-
-      // Usage example for a GET request
-      apiCall('https://gutendex.com/books/?page=1')
-      .then(handleResponse)
-      .catch(error => console.error(error));
+      
+      var selectedPage = 1;
+      var searchTimeout;
+      function searchData() {
+          clearTimeout(searchTimeout);
+          
+          searchTimeout = setTimeout(function() {
+            selectedPage = 1;
+            getApiData(selectedPage);
+          }, 500);
+      }
+      
+      function getApiData(page) {
+        let search = document.getElementById('search_input').value;
+        showPreloader();
+        apiCall('https://gutendex.com/books/?page=' + page + '&search='+search)
+        .then(handleResponse)
+        .catch(error => console.error(error));
+      }
 
       function handleResponse(response) {
           generateHtml(response.results);
+          generatePagination(response.count, 32, selectedPage);
+      }
+
+      function generatePagination(totalItems, itemsPerPage, currentPage) {
+        const maxVisiblePages = 6; 
+        const paginationContainer = document.getElementById('border-pagination');
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        
+    
+        paginationContainer.innerHTML = '';
+
+        function createPageItem(page, text, disabled = false, active = false) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = "#";
+            a.textContent = text || page;
+            if (disabled) a.classList.add('disabled');
+            if (active) a.classList.add('active');
+            li.appendChild(a);
+            li.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!disabled && currentPage !== page) {
+                  selectedPage = page;
+                  getApiData(selectedPage);
+                  
+                }
+            });
+            return li;
+        }
+
+       
+        paginationContainer.appendChild(createPageItem(currentPage - 1, '«', currentPage === 1));
+
+        
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        
+        if (startPage > 1) {
+            paginationContainer.appendChild(createPageItem(1)); 
+            if (startPage > 2) {
+                paginationContainer.appendChild(createPageItem(null, '...')); 
+            }
+        }
+
+        
+        for (let i = startPage; i <= endPage; i++) {
+            paginationContainer.appendChild(createPageItem(i, null, false, i === currentPage));
+        }
+
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationContainer.appendChild(createPageItem(null, '...')); 
+            }
+            paginationContainer.appendChild(createPageItem(totalPages)); 
+        }
+
+      
+        paginationContainer.appendChild(createPageItem(currentPage + 1, '»', currentPage === totalPages));
       }
 
       function generateHtml(dataList) {
@@ -166,21 +228,35 @@
           });
 
           dataListWrapper.innerHTML = innerHtml;
+
+          hidePreloader();
       }
   </script>
 
   <script>
     function showPreloader() {
-      const preloader = document.getElementById('preloader');
-      if (preloader) {
-        preloader.style.display = 'flex';  // Show the preloader
-      }
+      const preloader = document.getElementById('bookList');
+      let innerHtml = `
+        <div class="preloader-wrapper" id="preloader">
+          <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+        </div>
+      `;
+
+      preloader.innerHTML = innerHtml;
     }
 
     function hidePreloader() {
       const preloader = document.getElementById('preloader');
       if (preloader) {
-        preloader.style.display = 'none';  // Hide the preloader
+        preloader.style.display = 'none';  
       }
     }
   </script>
